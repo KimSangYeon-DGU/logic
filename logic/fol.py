@@ -11,7 +11,11 @@ class Unifier:
       self.q = self.parse_formula(q)
     else:
       self.q = q
-    return self.unify_with_occurrence_check(self.p, self.q)
+    
+    mgu = self.unify_with_occurrence_check(self.p, self.q)
+    if mgu != None:
+      mgu.sort()
+    return mgu
 
   def unify_with_occurrence_check(self, formula1, formula2, mgu = [], trace = False):
     if mgu is None:
@@ -106,3 +110,6 @@ class Substitution:
     
   def __str__(self):
     return str(self.variable) + '/' + str(self.replacement)
+  
+  def __lt__(self, other):
+    return str(self.variable) < str(other.variable)
