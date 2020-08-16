@@ -1,27 +1,29 @@
 import sys
+import unittest
 sys.path.insert(0, '..')
 from logic.fol import Unifier
 
-def main():
-  p_file_path = 'data/p.txt'; q_file_path = 'data/q.txt'
+class UnifierTests(unittest.TestCase):
+  def test_formula_single_mgu(self):
+    p = 'knows(John,x)'
+    q = 'knows(John,Jane)'
 
-  p = ''; q = ''
-  with open(p_file_path) as f:
-    for l in f:
-      p = l
+    unifier = Unifier()
+    mgu = unifier.unify(p, q)
+    
+    for u in mgu:
+      self.assertEqual(str(u), 'x/Jane')
+      
+  def test_relation_multiple_mgu(self):
+    p = 'parents(x,father(x),mother(Bill))'
+    q = 'parents(Bill,father(Bill),y)'
 
-  with open(q_file_path) as f:
-    for l in f:
-      q = l
-
-  unifier = Unifier()
-  mgu = unifier.unify(p, q)
-
-  if mgu is None:
-    print("False")
-  else:
-    print("True\n")
-    print("\n".join(map(str, mgu)))
+    gt = ['x/Bill', 'y/mother(Bill)']
+    unifier = Unifier()
+    mgu = unifier.unify(p, q)
+    
+    for u, g in zip(mgu, gt):
+      self.assertEqual(str(u), g)
 
 if __name__ == '__main__':
-  main()
+  unittest.main()
