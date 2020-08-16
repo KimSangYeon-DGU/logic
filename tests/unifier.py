@@ -6,7 +6,15 @@ sys.path.insert(0, '..')
 from logic.fol import Unifier
 
 class UnifierTests(unittest.TestCase):
-  
+  def test_parenthesis(self):
+    p = 'man((x)'
+    q = 'man(Socrates)'
+
+    unifier = Unifier()
+    
+    with self.assertRaises(Exception):
+      unifier.unify(p, q)
+
   def test_relation_single_mgu(self):
     p = 'man(x)'
     q = 'man(Socrates)'

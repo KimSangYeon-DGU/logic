@@ -17,7 +17,11 @@ class Unifier:
       mgu.sort()
     return mgu
 
-  def unify_with_occurrence_check(self, formula1, formula2, mgu = [], trace = False):
+  def unify_with_occurrence_check(self,
+                                  formula1,
+                                  formula2,
+                                  mgu = [],
+                                  trace = False):
     if mgu is None:
       return None
     elif formula1 == formula2:
@@ -38,7 +42,10 @@ class Unifier:
 
   def unify_variable(self, var, exp, mgu, trace):
     for s in (x for x in mgu if x.variable == var):
-      return self.unify_with_occurrence_check(s.replacement, exp, mgu, trace)
+      return self.unify_with_occurrence_check(s.replacement,
+                                              exp,
+                                              mgu,
+                                              trace)
     t = self.substitute(mgu, exp)
     if self.occurs_in(var, t) and isinstance(t, Formula):
       print("\nCannot unify - infinte loop exception!!!")
@@ -60,6 +67,8 @@ class Unifier:
       return mgu
     
   def parse_formula(self, s):
+    if s.count('(') != s.count(')'):
+      raise(Exception('Parentheses in a sentence should be pairs'))
     d, i = 0, 0
     op, args = None, []
     for j, c in enumerate(s):
