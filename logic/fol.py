@@ -63,7 +63,23 @@ class Unifier:
       for s in (sub for sub in mgu if (sub.variable == sub.replacement)):
         mgu.remove(s)
       return mgu
-    
+      
+  def substitute(self, sub, expr):
+    for s in (x for x in sub if self.occurs_in(x.variable, expr)):
+      if isinstance(expr, Variable):
+        expr = s.replacement
+      else:
+        expr.arguments = [self.substitute(sub, e) for e in expr.arguments]
+
+    return expr
+	
+  def occurs_in(self, var, expr):
+    if var == expr:
+      return True
+    if not isinstance(expr, Formula):
+      return False
+    return any([self.occurs_in(var, e) for e in expr.arguments])
+
   def parse_formula(self, sentence):
     s = sentence
     if s.count('(') != s.count(')'):
@@ -95,23 +111,7 @@ class Unifier:
       else:
         return Constant(s)
 
-    return Formula(op, list(map(self.parse_formula, args)))		
-      
-  def substitute(self, sub, expr):
-    for s in (x for x in sub if self.occurs_in(x.variable, expr)):
-      if isinstance(expr, Variable):
-        expr = s.replacement
-      else:
-        expr.arguments = [self.substitute(sub, e) for e in expr.arguments]
-
-    return expr
-	
-  def occurs_in(self, var, expr):
-    if var == expr:
-      return True
-    if not isinstance(expr, Formula):
-      return False
-    return any([self.occurs_in(var, e) for e in expr.arguments])
+    return Formula(op, list(map(self.parse_formula, args)))
 
 class Substitution:
   def __init__(self, variable, replacement):
