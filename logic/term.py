@@ -14,18 +14,12 @@ class Variable:
   def __str__(self):
     return self.variable_name
 
-  def __repr__(self):
-    return str(self)
-
-  def __hash(self):
-    return str(self).__hash__()
-
   def occurs_in(self, other):
     if isinstance(other, Variable) \
         and self.__eq__(other):
       return True
     if isinstance(other, Formula) \
-        and self.__str__() in other.__str():
+        and self.__str__() in other.__str__():
       return True
     return False
 
@@ -46,23 +40,15 @@ class Constant:
   def __str__(self):
     return self.constant_name
 
-  def __repr__(self):
-    return str(self)
-
-  def __hash__(self):
-    return str(self).__hash__()
-
 class Formula:
   def __init__(self, operator, arguments):
     self.operator = operator
     self.arguments = arguments
+    self.arity = len(arguments)
 
   def __str__(self):
     return '{0}({1})'.format(self.operator, \
         ', '.join(map(str, self.arguments)))
-
-  def __repr__(self):
-    return str(self)
 
   def __hash__(self):
     return str(self).__hash__()
@@ -77,7 +63,6 @@ class Formula:
 
     return all([a1 == a2 for a1, a2 \
         in zip(self.arguments, other.arguments)])
-
 
   def __ne__(self, other):
     return not self.__eq__(other)
